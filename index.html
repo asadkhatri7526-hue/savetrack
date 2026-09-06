@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="SaveTrack — personal savings and investment tracker. Local-only; not financial advice." />
+    <title>SaveTrack — Personal Savings &amp; Investment Manager</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body class="is-locked">
+    <div class="auth-screen" id="auth-screen">
+      <div class="auth-card">
+        <div class="auth-brand">
+          <span class="logo" aria-hidden="true"></span>
+          <div>
+            <div class="brand-name">SaveTrack</div>
+            <div class="brand-tag">Personal tracker</div>
+          </div>
+        </div>
+        <h1 id="auth-heading">Sign in</h1>
+        <p class="lede">Unlock this app on this device. Do not use your bank password, card PIN, or email login.</p>
+        <div class="segmented auth-tabs" role="tablist">
+          <button type="button" class="is-on" data-auth-tab="login">Sign in</button>
+          <button type="button" data-auth-tab="register">Create account</button>
+        </div>
+        <form id="form-login">
+          <label class="field">
+            <span>Username</span>
+            <input name="username" type="text" autocomplete="username" maxlength="24" required placeholder="Your SaveTrack username" />
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <input name="password" type="password" autocomplete="current-password" required minlength="4" />
+          </label>
+          <p class="err" id="login-err"></p>
+          <button type="submit" class="btn btn-primary auth-submit">Open SaveTrack</button>
+        </form>
+        <form id="form-register" hidden>
+          <label class="field">
+            <span>Username</span>
+            <input name="username" type="text" autocomplete="username" maxlength="24" required placeholder="Letters, numbers, underscore" />
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <input name="password" type="password" autocomplete="new-password" required minlength="4" />
+          </label>
+          <label class="field">
+            <span>Confirm password</span>
+            <input name="confirm" type="password" autocomplete="new-password" required minlength="4" />
+          </label>
+          <p class="err" id="register-err"></p>
+          <button type="submit" class="btn btn-primary auth-submit">Create account and open</button>
+        </form>
+        <p class="caption">Accounts and money records stay in this browser only. This is not a bank login.</p>
+      </div>
+    </div>
+
+    <div class="app" id="app" hidden>
+      <div class="overlay" id="overlay" hidden></div>
+
+      <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+        <div class="brand">
+          <span class="logo" aria-hidden="true"></span>
+          <div>
+            <div class="brand-name">SaveTrack</div>
+            <div class="brand-tag">Personal tracker</div>
+          </div>
+          <button type="button" class="icon-btn sidebar-close" id="sidebar-close" aria-label="Close menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
+        <nav class="nav">
+          <a class="nav-item is-active" href="#dashboard" data-route="dashboard" title="Dashboard">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+            Dashboard
+          </a>
+          <a class="nav-item" href="#income" data-route="income" title="Income">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><rect x="4" y="15" width="16" height="6" rx="1.5"/></svg>
+            Income
+          </a>
+          <a class="nav-item" href="#expenses" data-route="expenses" title="Expenses">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21V9"/><path d="M7 16l5 5 5-5"/><rect x="4" y="3" width="16" height="6" rx="1.5"/></svg>
+            Expenses
+          </a>
+          <a class="nav-item" href="#history" data-route="history" title="History">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg>
+            History
+          </a>
+          <a class="nav-item" href="#savings" data-route="savings" title="Savings">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9 11h6"/></svg>
+            Savings
+          </a>
+          <a class="nav-item" href="#investments" data-route="investments" title="Investments">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9l5 4 6-8 5 6v8H4z"/></svg>
+            Investments
+          </a>
+          <a class="nav-item" href="#transactions" data-route="transactions" title="Transactions">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 7h12M8 12h12M8 17h12"/><circle cx="4" cy="7" r="1.2" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="4" cy="17" r="1.2" fill="currentColor" stroke="none"/></svg>
+            Transactions
+          </a>
+          <a class="nav-item" href="#calculators" data-route="calculators" title="Calculators">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 12h2m4 0h2M8 17h2m4 0h2"/></svg>
+            Calculators
+          </a>
+          <a class="nav-item" href="#settings" data-route="settings" title="Settings">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H8a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V8c.3.7 1 1.2 1.8 1.2H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+            Settings
+          </a>
+        </nav>
+        <div class="sidebar-foot">
+          <div class="signed-in" id="signed-in"></div>
+          <div class="segmented" role="group" aria-label="Theme">
+            <button type="button" data-theme-set="light">Light</button>
+            <button type="button" data-theme-set="dark">Dark</button>
+            <button type="button" data-theme-set="system">System</button>
+          </div>
+          <button type="button" class="btn btn-secondary logout-btn" id="logout-btn">Log out</button>
+        </div>
+      </aside>
+
+      <div class="main-wrap">
+        <header class="topbar">
+          <button type="button" class="icon-btn hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <div>
+            <h1 id="page-title">Dashboard</h1>
+            <p class="page-sub" id="page-sub">Overview of this month</p>
+          </div>
+          <div class="topbar-actions">
+            <span class="device-only" id="whoami">This device only</span>
+            <div class="add-wrap">
+              <button type="button" class="btn btn-primary" id="header-add">Add</button>
+              <div class="menu" id="add-menu" hidden>
+                <button type="button" data-add="income">Income</button>
+                <button type="button" data-add="expense">Expense</button>
+                <button type="button" data-add="goal">Goal</button>
+                <button type="button" data-add="investment">Investment</button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main class="content" id="content">
+          <section class="page" id="page-dashboard" data-page="dashboard">
+            <div class="toolbar">
+              <div class="segmented" id="dash-period">
+                <button type="button" class="is-on" data-period="month">This month</button>
+                <button type="button" data-period="3mo">3 mo</button>
+                <button type="button" data-period="year">Year</button>
+              </div>
+            </div>
+            <div class="stat-grid" id="dash-stats"></div>
+            <article class="card chart-wide">
+              <div class="card-head">
+                <h2>Monthly used, saved, and invested</h2>
+              </div>
+              <div id="chart-money-flow"></div>
+              <p class="caption">Used is spending. Saved is money you assigned to goals. Invested is holdings you recorded. These are your entries, not a bank statement.</p>
+            </article>
+            <div class="dash-grid">
+              <article class="card">
+                <div class="card-head">
+                  <h2>Income vs expense</h2>
+                </div>
+                <div id="chart-income-expense"></div>
+                <p class="caption">Amounts you recorded. Not a bank statement.</p>
+              </article>
+              <article class="card">
+                <div class="card-head">
+                  <h2>Savings progress</h2>
+                </div>
+                <div id="chart-savings"></div>
+                <p class="caption">Progress is based on amounts you entered.</p>
+              </article>
+              <article class="card">
+                <div class="card-head">
+                  <h2>Investment summary</h2>
+                </div>
+                <div id="dash-invest"></div>
+                <p class="caption">Based on values you typed. Not live market data.</p>
+              </article>
+              <article class="card">
+                <div class="card-head">
+                  <h2>Active savings goals</h2>
+                  <a class="text-link" href="#savings">View all</a>
+                </div>
+                <div id="dash-goals"></div>
+              </article>
+            </div>
+            <article class="card">
+              <div class="card-head">
+                <h2>Recent transactions</h2>
+                <a class="text-link" href="#transactions">View all</a>
+              </div>
+              <div id="dash-recent"></div>
+            </article>
+          </section>
+
+          <section class="page" id="page-income" data-page="income" hidden>
+            <div class="split">
+              <article class="card form-card">
+                <h2>Add income</h2>
+                <form id="form-income">
+                  <label class="field">
+                    <span>Amount <em>Required</em></span>
+                    <div class="amount-wrap">
+                      <span class="currency-prefix" data-currency-prefix>$</span>
+                      <input name="amount" type="number" min="0.01" step="0.01" required placeholder="0.00" />
+                    </div>
+                    <small class="err" data-err="amount"></small>
+                  </label>
+                  <label class="field">
+                    <span>Income source <em>Required</em></span>
+                    <input name="source" type="text" maxlength="60" required placeholder="Salary, freelance…" list="income-sources" />
+                    <datalist id="income-sources"></datalist>
+                    <small class="err" data-err="source"></small>
+                  </label>
+                  <label class="field">
+                    <span>Date <em>Required</em></span>
+                    <input name="date" type="date" required />
+                    <small class="err" data-err="date"></small>
+                  </label>
+                  <label class="field">
+                    <span>Note</span>
+                    <textarea name="note" maxlength="200" rows="3" placeholder="Optional"></textarea>
+                  </label>
+                  <button type="submit" class="btn btn-primary">Save income</button>
+                </form>
+              </article>
+              <article class="card grow">
+                <div class="card-head">
+                  <h2>All income</h2>
+                </div>
+                <div class="filters">
+                  <input type="search" id="income-search" placeholder="Search source or note" />
+                  <input type="date" id="income-from" aria-label="From date" />
+                  <input type="date" id="income-to" aria-label="To date" />
+                </div>
+                <div id="income-list"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="page" id="page-expenses" data-page="expenses" hidden>
+            <div class="split">
+              <article class="card form-card">
+                <h2>Add expense</h2>
+                <form id="form-expense">
+                  <label class="field">
+                    <span>Amount <em>Required</em></span>
+                    <div class="amount-wrap">
+                      <span class="currency-prefix" data-currency-prefix>$</span>
+                      <input name="amount" type="number" min="0.01" step="0.01" required placeholder="0.00" />
+                    </div>
+                    <small class="err" data-err="amount"></small>
+                  </label>
+                  <label class="field">
+                    <span>Category <em>Required</em></span>
+                    <select name="category" required>
+                      <option value="">Select category</option>
+                      <option>Food</option>
+                      <option>Transport</option>
+                      <option>Bills</option>
+                      <option>Education</option>
+                      <option>Shopping</option>
+                      <option>Other</option>
+                    </select>
+                    <small class="err" data-err="category"></small>
+                  </label>
+                  <label class="field">
+                    <span>Date <em>Required</em></span>
+                    <input name="date" type="date" required />
+                    <small class="err" data-err="date"></small>
+                  </label>
+                  <label class="field">
+                    <span>Note</span>
+                    <textarea name="note" maxlength="200" rows="3" placeholder="Optional"></textarea>
+                  </label>
+                  <button type="submit" class="btn btn-primary">Save expense</button>
+                </form>
+              </article>
+              <article class="card grow">
+                <div class="card-head">
+                  <h2>All expenses</h2>
+                </div>
+                <div class="filters">
+                  <input type="search" id="expense-search" placeholder="Search note or category" />
+                  <select id="expense-category">
+                    <option value="">All categories</option>
+                    <option>Food</option>
+                    <option>Transport</option>
+                    <option>Bills</option>
+                    <option>Education</option>
+                    <option>Shopping</option>
+                    <option>Other</option>
+                  </select>
+                  <input type="date" id="expense-from" aria-label="From date" />
+                  <input type="date" id="expense-to" aria-label="To date" />
+                </div>
+                <div class="chips" id="expense-chips"></div>
+                <div id="expense-list"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="page" id="page-history" data-page="history" hidden>
+            <article class="card">
+              <div class="card-head">
+                <h2>Expense history</h2>
+              </div>
+              <p class="lede">Every expense you recorded, newest first. Edit or delete from here if you need to correct a row.</p>
+              <div class="filters wrap">
+                <input type="search" id="history-search" placeholder="Search note or category" />
+                <select id="history-category">
+                  <option value="">All categories</option>
+                  <option>Food</option>
+                  <option>Transport</option>
+                  <option>Bills</option>
+                  <option>Education</option>
+                  <option>Shopping</option>
+                  <option>Other</option>
+                </select>
+                <input type="date" id="history-from" aria-label="From date" />
+                <input type="date" id="history-to" aria-label="To date" />
+                <button type="button" class="btn btn-ghost" id="history-clear">Clear filters</button>
+              </div>
+              <div id="history-list"></div>
+            </article>
+          </section>
+
+          <section class="page" id="page-savings" data-page="savings" hidden>
+            <div class="stat-grid compact" id="savings-stats"></div>
+            <div class="card-grid" id="goals-grid"></div>
+          </section>
+
+          <section class="page" id="page-investments" data-page="investments" hidden>
+            <div class="banner banner-warn">
+              Values are amounts you entered. SaveTrack does not fetch live prices and does not recommend investments.
+            </div>
+            <div class="stat-grid compact" id="invest-stats"></div>
+            <div class="toolbar">
+              <div class="segmented" id="invest-view">
+                <button type="button" class="is-on" data-view="cards">Cards</button>
+                <button type="button" data-view="table">Table</button>
+              </div>
+            </div>
+            <div id="invest-list"></div>
+          </section>
+
+          <section class="page" id="page-transactions" data-page="transactions" hidden>
+            <article class="card">
+              <div class="filters wrap">
+                <input type="search" id="txn-search" placeholder="Search description, category, type" />
+                <select id="txn-type">
+                  <option value="">All types</option>
+                  <option>Income</option>
+                  <option>Expense</option>
+                  <option>Savings</option>
+                  <option>Investment</option>
+                </select>
+                <select id="txn-sort">
+                  <option value="date-desc">Date (newest)</option>
+                  <option value="date-asc">Date (oldest)</option>
+                  <option value="amount-desc">Amount (high)</option>
+                  <option value="amount-asc">Amount (low)</option>
+                  <option value="type">Type</option>
+                </select>
+                <input type="date" id="txn-from" aria-label="From date" />
+                <input type="date" id="txn-to" aria-label="To date" />
+                <button type="button" class="btn btn-ghost" id="txn-clear">Clear filters</button>
+              </div>
+              <div id="txn-chips"></div>
+              <div id="txn-list"></div>
+            </article>
+          </section>
+
+          <section class="page" id="page-calculators" data-page="calculators" hidden>
+            <p class="banner banner-warn">Calculations are estimates only. Not financial advice. Not a prediction of returns.</p>
+            <div class="calc-grid">
+              <article class="card">
+                <h2>Monthly savings calculator</h2>
+                <p class="lede">Estimate leftover cash from numbers you type.</p>
+                <form id="calc-monthly">
+                  <label class="field">
+                    <span>Monthly income</span>
+                    <input name="income" type="number" min="0" step="0.01" required />
+                  </label>
+                  <label class="field">
+                    <span>Monthly expenses</span>
+                    <input name="expenses" type="number" min="0" step="0.01" required />
+                  </label>
+                  <div class="btn-row">
+                    <button type="submit" class="btn btn-primary">Calculate</button>
+                    <button type="button" class="btn btn-secondary" id="prefill-month">Prefill from this month’s records</button>
+                  </div>
+                </form>
+                <div class="result" id="calc-monthly-out" hidden></div>
+                <p class="caption">Estimate only. Not financial advice.</p>
+              </article>
+              <article class="card">
+                <h2>Compound-growth calculator</h2>
+                <p class="lede">Hypothetical growth using a rate you choose.</p>
+                <form id="calc-compound">
+                  <label class="field">
+                    <span>Starting amount</span>
+                    <input name="principal" type="number" min="0" step="0.01" required />
+                  </label>
+                  <label class="field">
+                    <span>Monthly contribution</span>
+                    <input name="pmt" type="number" min="0" step="0.01" required />
+                  </label>
+                  <label class="field">
+                    <span>Annual rate (%)</span>
+                    <input name="rate" type="number" step="0.01" required placeholder="e.g. 5 — you choose" />
+                  </label>
+                  <label class="field">
+                    <span>Years</span>
+                    <input name="years" type="number" min="0.1" step="0.1" required />
+                  </label>
+                  <button type="submit" class="btn btn-primary">Calculate</button>
+                </form>
+                <div class="result" id="calc-compound-out" hidden></div>
+                <p class="caption">Estimate assumes monthly compounding and a constant rate you typed. Real returns vary and can be negative. Not financial advice. Not a prediction of returns.</p>
+              </article>
+              <article class="card">
+                <h2>Goal calculator</h2>
+                <p class="lede">Estimate a monthly amount to reach a target by a date.</p>
+                <form id="calc-goal">
+                  <label class="field">
+                    <span>Target amount</span>
+                    <input name="target" type="number" min="0.01" step="0.01" required />
+                  </label>
+                  <label class="field">
+                    <span>Already saved</span>
+                    <input name="saved" type="number" min="0" step="0.01" required />
+                  </label>
+                  <label class="field">
+                    <span>Target date</span>
+                    <input name="date" type="date" required />
+                  </label>
+                  <button type="submit" class="btn btn-primary">Calculate</button>
+                </form>
+                <div class="result" id="calc-goal-out" hidden></div>
+                <p class="caption">Estimate only. Ignores inflation, interest, and income changes. Not financial advice.</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="page" id="page-settings" data-page="settings" hidden>
+            <div class="settings-col">
+              <article class="card">
+                <h2>Account</h2>
+                <p class="lede" id="settings-user"></p>
+                <button type="button" class="btn btn-secondary" id="logout-btn-2">Log out</button>
+                <p class="caption">Logging out hides your records until you sign in again on this device.</p>
+              </article>
+              <article class="card">
+                <h2>Currency</h2>
+                <label class="field">
+                  <span>Display currency</span>
+                  <select id="setting-currency">
+                    <option value="USD">USD $</option>
+                    <option value="EUR">EUR €</option>
+                    <option value="GBP">GBP £</option>
+                    <option value="PKR">PKR Rs</option>
+                    <option value="INR">INR ₹</option>
+                    <option value="CAD">CAD $</option>
+                    <option value="AUD">AUD $</option>
+                  </select>
+                </label>
+                <p class="caption">Changes symbols only. Does not convert historical amounts.</p>
+              </article>
+              <article class="card">
+                <h2>Appearance</h2>
+                <div class="segmented" id="setting-theme">
+                  <button type="button" data-theme-set="light">Light</button>
+                  <button type="button" data-theme-set="dark">Dark</button>
+                  <button type="button" data-theme-set="system">System</button>
+                </div>
+              </article>
+              <article class="card">
+                <h2>Notifications</h2>
+                <label class="toggle">
+                  <input type="checkbox" id="note-weekly" />
+                  <span>Remind me to log expenses (weekly)</span>
+                </label>
+                <label class="toggle">
+                  <input type="checkbox" id="note-goals" />
+                  <span>Goal target date reminder</span>
+                </label>
+                <p class="caption">Uses the browser Notification API if permitted. No email. No push server. Reminders stay on this device.</p>
+                <p class="caption" id="note-status"></p>
+              </article>
+              <article class="card">
+                <h2>Data</h2>
+                <p class="lede">Stored only in this browser via localStorage. Some private browsing modes clear data when the window closes.</p>
+                <div class="btn-row">
+                  <button type="button" class="btn btn-secondary" id="export-data">Export JSON</button>
+                  <button type="button" class="btn btn-danger" id="reset-data">Reset all data</button>
+                </div>
+              </article>
+              <article class="card">
+                <h2>About</h2>
+                <p>SaveTrack version 1.0. A tracking tool only. Figures you enter are stored on this device. Calculations are estimates, not financial advice. Past or projected performance is not a guarantee of future results. Do not enter bank passwords, card numbers, or banking login credentials.</p>
+              </article>
+            </div>
+          </section>
+        </main>
+        <footer class="app-footer">
+          SaveTrack is a tracking tool. Figures you enter are stored only on this device. Calculations are estimates, not financial advice. Past or projected performance is not a guarantee of future results.
+        </footer>
+      </div>
+    </div>
+
+    <div class="modal-root" id="modal-root" hidden>
+      <div class="modal-backdrop" id="modal-backdrop"></div>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-head">
+          <h2 id="modal-title">Dialog</h2>
+          <button type="button" class="icon-btn" id="modal-x" aria-label="Close">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+        <div class="modal-foot" id="modal-foot"></div>
+      </div>
+    </div>
+
+    <div class="toasts" id="toasts" aria-live="polite"></div>
+    <script src="js/app.js"></script>
+  </body>
+</html>
